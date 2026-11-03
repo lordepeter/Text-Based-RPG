@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
-
+from backend import processar_comando
 
 def criar_interface():
     janela = tk.Tk()
@@ -305,28 +305,36 @@ def criar_historia(painel_central):
 
     return historia, caixa_texto
 
+# Função independente para adicionar mensagens à história
+def adicionar_historia(historia, mensagem):
+    historia.config(state="normal")
+    historia.insert(tk.END, f"{mensagem}\n")
+    historia.see(tk.END)
+    historia.config(state="disabled")
+
+
+# Configuração dos eventos de comando
 def configurar_eventos_historia(historia, caixa_texto):
-    #Função Responsável por Inserir Mensagens
-    def adicionar_historia(mensagem):
-        historia.config(state="normal")
 
-        historia.insert(tk.END, f"{mensagem}\n")
-        historia.see(tk.END)
-
-        historia.config(state="disabled")
-    #Configurações Recebimento de Comandos
     def enviar_comando(event):
-        comando = caixa_texto.get().strip()
+        comando = caixa_texto.get().strip().lower()
+
         if comando:
-            adicionar_historia(f"> {comando}")
+            adicionar_historia(historia, f"> {comando}")
+
+            resposta = processar_comando(comando)
+
+            adicionar_historia(historia, resposta)
+
         caixa_texto.delete(0, tk.END)
 
     caixa_texto.bind("<Return>", enviar_comando)
 
-    adicionar_historia("Você desperta em uma floresta desconhecida.")
-    adicionar_historia("Uma trilha estreita segue em direção ao norte.")
-    adicionar_historia("O que deseja fazer?")
+    adicionar_historia(historia, "Você desperta em uma floresta desconhecida.")
+    adicionar_historia(historia, "Uma trilha estreita segue em direção ao norte.")
+    adicionar_historia(historia, "O que deseja fazer?")
 
+    
 def configurar_eventos_inventario(lista_inventario, janela):
     #Função para Selecionar Itens
     def abrir_nova_janela(valor):
