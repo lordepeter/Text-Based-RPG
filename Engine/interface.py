@@ -373,3 +373,28 @@ def configurar_eventos_inventario(lista_inventario, janela):
 
             abrir_nova_janela(valor) 
     lista_inventario.bind('<Double-Button-1>', ao_selecionar)
+
+# Funções auxiliares de inventário e anotações criadas nas aulas anteriores.
+def atualizar_inventario(lista_inventario, itens):
+    lista_inventario.delete(0, tk.END)
+    for item in itens:
+        lista_inventario.insert(tk.END, item)
+
+
+def adicionar_item(lista_inventario, item):
+    lista_inventario.insert(tk.END, item)
+
+
+def remover_item(lista_inventario, item):
+    for indice, nome_item in enumerate(lista_inventario.get(0, tk.END)):
+        if nome_item == item:
+            lista_inventario.delete(indice)
+            break
+
+
+def possui_item(lista_inventario, item):
+    return item in lista_inventario.get(0, tk.END)
+
+
+def obter_anotacoes(campo_anotacoes):
+    return campo_anotacoes.get("1.0", tk.END).strip()
