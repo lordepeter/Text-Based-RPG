@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
-from backend import processar_comando
+from backend import processar_comando, obter_personagem, receber_dano
 
 def criar_interface():
     janela = tk.Tk()
@@ -44,19 +44,19 @@ def criar_interface():
     painel_central.rowconfigure(1, weight=1)
     painel_central.columnconfigure(0, weight=1)
 
+    #Importando personagem
+    personagem = obter_personagem()
+    atualizar_ficha(ficha, personagem)
+    
     lista_inventario = criar_inventario(painel_esquerdo)
     campo_anotacoes = criar_anotacoes(painel_esquerdo)
     ficha = criar_ficha(painel_direito)
-    atualizar_vida(ficha, 75, 100)
-    atualizar_xp(ficha, 25, 100)
-    atualizar_atributos(ficha, 8, 5, 9)
-    atualizar_nome(ficha, "Arthur")
-    atualizar_nivel(ficha, 1)
 
     historia, caixa_texto = criar_historia(painel_central)
-    configurar_eventos_historia(historia, caixa_texto)
+    configurar_eventos_historia(historia, caixa_texto, ficha, personagem)
     configurar_eventos_inventario(lista_inventario, janela)
-
+    
+    
     
     janela.mainloop()
 
@@ -314,7 +314,7 @@ def adicionar_historia(historia, mensagem):
 
 
 # Configuração dos eventos de comando
-def configurar_eventos_historia(historia, caixa_texto):
+def configurar_eventos_historia(historia, caixa_texto, ficha, personagem):
 
     def enviar_comando(event):
         comando = caixa_texto.get().strip().lower()
@@ -323,8 +323,8 @@ def configurar_eventos_historia(historia, caixa_texto):
             adicionar_historia(historia, f"> {comando}")
 
             resposta = processar_comando(comando)
-
             adicionar_historia(historia, resposta)
+            atualizar_ficha(ficha, personagem)
 
         caixa_texto.delete(0, tk.END)
 
@@ -398,3 +398,11 @@ def possui_item(lista_inventario, item):
 
 def obter_anotacoes(campo_anotacoes):
     return campo_anotacoes.get("1.0", tk.END).strip()
+
+#Função responsável por atualizar a interface   
+def atualizar_ficha(ficha, personagem):
+    atualizar_vida(ficha, personagem["vida"], personagem["vida_maxima"])
+    atualizar_xp(ficha, personagem["xp"], personagem["xp_maximo"])
+    atualizar_atributos(ficha, personagem["forca"], personagem["defesa"], personagem["agilidade"])
+    atualizar_nome(ficha, personagem["nome"])
+    atualizar_nivel(ficha, personagem["nivel"])

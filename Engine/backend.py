@@ -53,9 +53,13 @@ def processar_comando(comando):
     if comando == "explorar":
         return "Você começa a explorar a floresta."
     elif comando == "descansar":
+        curar_personagem(heroi, 20)
         return "Você encontra um lugar seguro para descansar."
     else:
         return "Não entendi esse comando."
 
 
 heroi = criar_personagem("Arthur")
+
+def obter_personagem():
+    return heroi
